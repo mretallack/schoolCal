@@ -109,7 +109,7 @@ icalcomponent* calendar_entry::generate_ical()
 		icalproperty_new_summary((const char*)this->title.c_str())
 		);
 
-#if 0
+#if 1
 	icalcomponent_add_property(
 		event,
 		icalproperty_new_description(details.c_str())
