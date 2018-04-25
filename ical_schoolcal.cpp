@@ -60,6 +60,7 @@ icalcomponent* create_new_calendar()
         icalproperty_new_prodid("-//RDU Software//NONSGML HandCal//EN")
         );
 
+#if 0
 	// for now the timezone from the JSON is always UK, we could
 	// use the timezone entry, but I dont expect things to move
 	icalcomponent* timezone = icalcomponent_new(ICAL_VTIMEZONE_COMPONENT);
@@ -70,6 +71,7 @@ icalcomponent* create_new_calendar()
 	);
 
     icalcomponent_add_component(calendar,timezone);
+#endif
 
     return calendar;
 }
@@ -189,7 +191,7 @@ int main(int argc, char *argv[])
 	{
 		std::cout << "Please specify the output ica file\n";
 	}
-	else if (loadInEvents(90, jsonString)==false)
+	else if (loadInEvents(360, jsonString)==false)
 	{
 		std::cout << "Failed to fetch the calendar data\n";
 	}
@@ -199,7 +201,7 @@ int main(int argc, char *argv[])
 
 		pcaOutputFile=argv[1];
 
-		//printf("%s\r\n",jsonString.c_str());
+	//	printf("%s\r\n",jsonString.c_str());
 		json = cJSON_Parse(jsonString.c_str());
 
 		if (json!=NULL)

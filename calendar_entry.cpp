@@ -63,7 +63,7 @@ bool calendar_entry::getTime(cJSON * subitem, const char *name, const char *form
 
 	if ((res!=NULL)&&(*res == 0))
 	{
-		returnTime = mktime(&tmpTime);
+		returnTime = timegm(&tmpTime);
 		blnRet=true;
 	}
 
@@ -98,21 +98,38 @@ icalcomponent* calendar_entry::generate_ical()
 
 	icalcomponent* event = icalcomponent_new(ICAL_VEVENT_COMPONENT);
 
+	std::string newUID = this->id + "-school@retallack.org.uk";
+
+	property = icalproperty_new_uid(newUID.c_str());
+	icalcomponent_add_property(event, property);
+
+
 	icalcomponent_add_property(
 		event,
 		icalproperty_new_summary((const char*)this->title.c_str())
 		);
 
+#if 0
 	icalcomponent_add_property(
 		event,
 		icalproperty_new_description(details.c_str())
 		);
+#endif
 
 	// for now the timezone from the JSON is always UK, we could
 	// use the timezone entry, but I dont expect things to move
 	//icaltime_from_timet
 	//const char *line = "Europe/London";
 	//icaltimezone *local_timezone = icaltimezone_get_builtin_timezone(line);
+
+	property = icalproperty_new_tzid("Europe/London");
+	icalcomponent_add_property( event, property );
+
+
+	// the DSTAMP must exist
+	property = icalproperty_new_dtstamp( icaltime_from_timet(time(NULL),0) );
+	icalcomponent_add_property( event, property );
+
 
 	// and add the start and end
 	property = icalproperty_new_dtstart(icaltime_from_timet( this->start, this->allDay ? 1 : 0));
@@ -121,6 +138,7 @@ icalcomponent* calendar_entry::generate_ical()
 	// and add the start and end
 	property = icalproperty_new_dtend(icaltime_from_timet( this->end, this->allDay ? 1 : 0));
 	icalcomponent_add_property(event,property);
+
 
 	return(event);
 }
