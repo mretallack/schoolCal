@@ -2,6 +2,12 @@
 Calendar For school
 
 
+# TODO
+
+The timezone is not currently correct, 
+
+
+
 
 
 http://www.stmaryjosephswool.dorset.sch.uk/website/calendar/

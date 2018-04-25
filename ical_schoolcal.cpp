@@ -60,6 +60,17 @@ icalcomponent* create_new_calendar()
         icalproperty_new_prodid("-//RDU Software//NONSGML HandCal//EN")
         );
 
+	// for now the timezone from the JSON is always UK, we could
+	// use the timezone entry, but I dont expect things to move
+	icalcomponent* timezone = icalcomponent_new(ICAL_VTIMEZONE_COMPONENT);
+
+    icalcomponent_add_property(
+		timezone,
+		icalproperty_new_tzid("Europe/London")
+	);
+
+    icalcomponent_add_component(calendar,timezone);
+
     return calendar;
 }
 
@@ -188,6 +199,7 @@ int main(int argc, char *argv[])
 
 		pcaOutputFile=argv[1];
 
+		printf("%s\r\n",jsonString.c_str());
 		json = cJSON_Parse(jsonString.c_str());
 
 		if (json!=NULL)

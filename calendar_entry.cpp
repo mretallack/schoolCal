@@ -10,15 +10,15 @@
 #include <iostream>
 #include <algorithm>
 
-#include "calendar_entry.hpp"
-
 #include <libical/ical.h>
 
+#include "calendar_entry.hpp"
 
 calendar_entry::calendar_entry(cJSON * subitem)
 {
 	this->id = getString(subitem,"id");
 	this->title = getString(subitem,"title");
+	this->details = getString(subitem,"details");
 
 	allDay = getBoolean(subitem,"allDay");
 
@@ -103,12 +103,16 @@ icalcomponent* calendar_entry::generate_ical()
 		icalproperty_new_summary((const char*)this->title.c_str())
 		);
 
-#if 0
 	icalcomponent_add_property(
 		event,
-		icalproperty_new_description((const char*)sqlite3_column_text(stmt, colIndex))
+		icalproperty_new_description(details.c_str())
 		);
-#endif
+
+	// for now the timezone from the JSON is always UK, we could
+	// use the timezone entry, but I dont expect things to move
+	//icaltime_from_timet
+	//const char *line = "Europe/London";
+	//icaltimezone *local_timezone = icaltimezone_get_builtin_timezone(line);
 
 	// and add the start and end
 	property = icalproperty_new_dtstart(icaltime_from_timet( this->start, this->allDay ? 1 : 0));
