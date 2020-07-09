@@ -15,12 +15,12 @@ icalcomponent* create_new_calendar()
 
     /* variable definitions */
     icalcomponent* calendar;
-   // struct icaltimetype atime = icaltime_from_timet( time(0),0);
+   // struct icaltimetype atime = icaltime_from_timet_with_zone( time(0),0,NULL);
     struct icalperiodtype rtime;
 
     /* Define a time type that will use as data later. */
-    rtime.start = icaltime_from_timet( time(0),0);
-    rtime.end = icaltime_from_timet( time(0),0);
+    rtime.start = icaltime_from_timet_with_zone( time(0),0, NULL);
+    rtime.end = icaltime_from_timet_with_zone( time(0),0, NULL);
     rtime.end.hour++;
 
     /* Create calendar and add properties */

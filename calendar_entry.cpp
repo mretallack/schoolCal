@@ -127,16 +127,16 @@ icalcomponent* calendar_entry::generate_ical()
 
 
 	// the DSTAMP must exist
-	property = icalproperty_new_dtstamp( icaltime_from_timet(time(NULL),0) );
+	property = icalproperty_new_dtstamp( icaltime_from_timet_with_zone(time(NULL),0,NULL) );
 	icalcomponent_add_property( event, property );
 
 
 	// and add the start and end
-	property = icalproperty_new_dtstart(icaltime_from_timet( this->start, this->allDay ? 1 : 0));
+	property = icalproperty_new_dtstart(icaltime_from_timet_with_zone( this->start, this->allDay ? 1 : 0,NULL));
 	icalcomponent_add_property(event,property);
 
 	// and add the start and end
-	property = icalproperty_new_dtend(icaltime_from_timet( this->end, this->allDay ? 1 : 0));
+	property = icalproperty_new_dtend(icaltime_from_timet_with_zone( this->end, this->allDay ? 1 : 0, NULL));
 	icalcomponent_add_property(event,property);
 
 
