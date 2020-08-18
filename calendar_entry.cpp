@@ -25,6 +25,12 @@ calendar_entry::calendar_entry(cJSON * subitem)
 	getTime(subitem,"start", this->start);
 	getTime(subitem,"end", this->end);
 
+    // the src sets the end to the same day if an all day event
+    // so we want to "tip" it over the edge into a new day
+    if (allDay)
+    {
+        this->end+=60;
+    }
 }
 
 
@@ -134,7 +140,6 @@ icalcomponent* calendar_entry::generate_ical()
 	// the DSTAMP must exist
 	property = icalproperty_new_dtstamp( icaltime_from_timet_with_zone(time(NULL),0,NULL) );
 	icalcomponent_add_property( event, property );
-
 
 	// and add the start and end
 	property = icalproperty_new_dtstart(icaltime_from_timet_with_zone( this->start, this->allDay ? 1 : 0,NULL));
