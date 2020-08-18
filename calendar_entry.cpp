@@ -110,9 +110,14 @@ icalcomponent* calendar_entry::generate_ical()
 		);
 
 #if 1
+	std::string description=details;
+	if (description.empty()) 
+	{
+		description=this->title;
+	}
 	icalcomponent_add_property(
 		event,
-		icalproperty_new_description(details.c_str())
+		icalproperty_new_description(description.c_str())
 		);
 #endif
 
