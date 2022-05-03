@@ -93,9 +93,19 @@ std::string calendar_entry::getString(cJSON * subitem, const char *name)
 {
 	std::string returnString;
 
-	returnString = cJSON_GetStringValue(cJSON_GetObjectItem(subitem,name));
+	cJSON *obj = cJSON_GetObjectItem(subitem,name);
 
-	return(returnString.c_str());
+	if (obj!=NULL)
+	{
+		returnString = cJSON_GetStringValue(obj);
+	}
+	else
+	{
+		//printf("ERROR, cannot find %s\n", name);
+	}
+
+
+	return(strdup(returnString.c_str()));
 }
 
 icalcomponent* calendar_entry::generate_ical()
