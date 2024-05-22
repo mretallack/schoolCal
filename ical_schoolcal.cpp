@@ -142,7 +142,7 @@ bool loadInEvents(int days, std::string &returnData)
 		snprintf(buff, sizeof(buff), "start=%lld&end=%lld", (long long)startDate, (long long)endDate);
 		std::string postRequest = buff;
 
-		curl_easy_setopt(curl, CURLOPT_URL,  "http://www.smsjwool.dorset.sch.uk/cms/cms_pages/get_calendar_source/x/x/0");
+		curl_easy_setopt(curl, CURLOPT_URL,  "https://www.smsjwool.dorset.sch.uk/cms/cms_pages/get_calendar_source/x/x/0");
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postRequest.c_str());
 
 		/* Create the write buffer */
