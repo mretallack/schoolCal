@@ -95,8 +95,6 @@ def main():
     with open(output_file, "wb") as f:
         f.write(cal.to_ical())
 
-    print(f"Wrote {len(events)} events to {output_file}")
-
 
 if __name__ == "__main__":
     main()
