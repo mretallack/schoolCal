@@ -1,44 +1,28 @@
+VENV=venv
+PYTHON=$(VENV)/bin/python3
+PIP=$(VENV)/bin/pip
 
+.PHONY: all run test lint clean
 
-CJSON=1.7.6
+all: venv
 
-CJSON_LIB=third-party/cJSON-${CJSON}/libcjson.so.${CJSON}
+venv: $(VENV)/bin/activate
 
+$(VENV)/bin/activate: requirements.txt
+	python3 -m venv $(VENV)
+	$(PIP) install -r requirements.txt
+	$(PIP) install pytest flake8
+	touch $(VENV)/bin/activate
 
+run: venv
+	$(PYTHON) ical_schoolcal.py output.ics
 
+test: venv
+	$(PYTHON) -m pytest tests/ -v --ignore=tests/test_integration.py
 
-SRC_FILES=ical_schoolcal.cpp calendar_entry.cpp
+lint: venv
+	$(PYTHON) -m flake8 ical_schoolcal.py tests/
 
-CFLAGS+=-Wall -g -Ithird-party/cJSON-${CJSON}
-CPPFLAGS+= ${CFLAGS} -std=c++11
-LDFLAGS+=-lical -Lthird-party/cJSON-${CJSON}/ -lcjson -lcurl
-
-
-OBJ_FILES=$(patsubst %.cpp,obj/%.o,$(SRC_FILES))
-
-ical_schoolcal: ${CJSON_LIB} ${OBJ_FILES}
-	$(CXX) $(LDFLAGS) -o $@ $^
-
-
-obj/%.o : %.cpp
-	@mkdir -p obj
-	$(CXX) $(CPPFLAGS) -c $< -o $@
-
-obj/%.o : %.c
-	@mkdir -p obj
-	$(CC) $(CFLAGS) -c $< -o $@
-
-
-${CJSON_LIB}:
-	cd third-party ; wget https://github.com/DaveGamble/cJSON/archive/v${CJSON}.tar.gz
-	cd third-party ; gzip -cd v${CJSON}.tar.gz | tar xfv -
-	cd third-party/cJSON-${CJSON} ; make
- 
- 
 clean:
-	rm -fr obj
-	rm -f ical_schoolcal
-	
-	
-.PHONY: clean
-
+	rm -rf $(VENV) __pycache__ .pytest_cache
+	rm -f output.ics

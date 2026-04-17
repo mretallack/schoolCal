@@ -1,29 +1,79 @@
 # schoolCal
-Calendar For school
 
+Fetches calendar events from the [St Mary & St Joseph's School](https://www.smsjwool.dorset.sch.uk/calendar) website and exports them as an iCal (`.ics`) file that can be imported into Google Calendar, Apple Calendar, Outlook, etc.
 
-# TODO
+## How It Works
 
-The timezone is not currently correct, 
+The school website exposes a JSON API at `/events`. This tool:
 
+1. Queries the API for events within a configurable date range (default: 360 days ahead)
+2. Parses the JSON response
+3. Generates a standards-compliant iCal file with proper all-day event handling and timezone support
 
+## Requirements
 
+- Python 3.10+
 
+## Quick Start
 
-http://www.stmaryjosephswool.dorset.sch.uk/website/calendar/
+```bash
+# Set up the virtual environment and install dependencies
+make
 
+# Fetch events and write to a file
+make run                                          # writes output.ics
+venv/bin/python3 ical_schoolcal.py my_calendar.ics  # custom output path
+```
 
-HTTP POST on:
+## Makefile Targets
 
+| Target       | Description                                      |
+|--------------|--------------------------------------------------|
+| `make`       | Create venv and install dependencies              |
+| `make run`   | Fetch events and write `output.ics`               |
+| `make test`  | Run unit tests                                    |
+| `make lint`  | Run flake8 linter                                 |
+| `make clean` | Remove venv, caches, and generated files          |
 
-http://www.stmaryjosephswool.dorset.sch.uk/cms/cms_pages/get_calendar_source/x/x/0
+## Running Tests
 
-curl 'http://www.stmaryjosephswool.dorset.sch.uk/cms/cms_pages/get_calendar_source/x/x/0' -H 'Cookie: ci_session=4fed905d23ecb9fcabf92a6e3a42fded2bb7670073f6ce180ccda3a0408de4ee8c4926b8eb5d451a197d3b02dde2fd439f92cf16769bd88a0939893bce698890RfLtBtRI0We5cjXZ1mvep4FBoXiidOGN%2F0%2FrXd2ZeGtTVl71%2Bi4bIamK0cJS77N9x8Lr7Qsbtdq%2BrxTx5%2FBOuWR0istH73EnLuwYQdn7zNlTPTDXJ3d6s8g6EaDEOvTp%2FaMuQQ8Wt0XT3RmB5GMRg8J4Z5gQQydiERPp2vxq9Ns%2FJ8FiMbvtqY50yGVpx594hLH2UzZIGnXueJve1Zvkb3eijr0yWDai0LezvHaPgqWnP9ZmlPSQV%2Bp%2FBdCTuGbe9cujmd9b4fctOw8OvVNdtw0lOMTzeh4wAmnWDhPVp617PxEw4Ymfy5ZdsT%2FV7tkmb%2FMnHqgpHOnzh0kRg2voPM3HotS1Nf2XwPruxiq0%2BRgOPrxyzRV90lg5MlJ8OvOLVAII7oKCnWEJQe%2FOA2V%2BSXtoZxbtkbtcbs25RZnXQgg%3D' -H 'Origin: http://www.stmaryjosephswool.dorset.sch.uk' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,es;q=0.7' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: http://www.stmaryjosephswool.dorset.sch.uk/website/calendar/' -H 'X-Requested-With: XMLHttpRequest' -H 'Connection: keep-alive' --data 'start=1522018800&end=1525647600' --compressed
+```bash
+make test
+```
 
+Tests are in the `tests/` directory:
 
+- **Unit tests** — test date parsing, calendar building, and event conversion using mocked data (run by default)
+- **Integration tests** — hit the live school API; skipped by default, run with:
 
-curl 'http://www.stmaryjosephswool.dorset.sch.uk/cms/cms_pages/get_calendar_source/x/x/0' --data 'start=1522018800&end=1525647600' 
+```bash
+venv/bin/python3 -m pytest tests/ -m integration -v
+```
 
+Integration tests are also run in CI to verify the upstream API hasn't changed.
 
+## CI/CD
 
+GitHub Actions runs on every push and pull request:
 
+- **Lint** — flake8 style checks
+- **Unit tests** — fast, no network required
+- **Integration tests** — verifies the live API still returns valid data
+
+## Project Structure
+
+```
+├── ical_schoolcal.py   # Main script
+├── requirements.txt    # Runtime dependencies
+├── Makefile            # Build/test/run automation
+├── tests/
+│   ├── test_unit.py    # Unit tests (mocked data)
+│   └── test_integration.py  # Live API tests
+└── .github/
+    └── workflows/
+        └── ci.yml      # GitHub Actions workflow
+```
+
+## License
+
+[MIT](LICENSE)

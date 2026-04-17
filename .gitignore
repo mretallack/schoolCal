@@ -1,2 +1,7 @@
-/ical_schoolcal
-/obj/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+output.ics
+*.egg-info/
